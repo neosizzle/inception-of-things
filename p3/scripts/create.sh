@@ -64,5 +64,3 @@ argocd app sync victory-royale
       kubectl port-forward services/victory-royale 8888 -n dev --address="0.0.0.0" 2>&1 > /var/log/dev-server.log 
       sleep 10  # Add a small delay to prevent excessive CPU usage
 done &
-
-# todo change repo name
