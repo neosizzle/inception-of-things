@@ -23,11 +23,12 @@ helm upgrade --install gitlab gitlab/gitlab \
   --set readinessProbe.initialDelaySeconds=1220
 
 if [ $? -ne 0 ]; then
-  echo "Command failed. Exiting with non-zero status."
+  echo "helm upgrade command failed. Exiting with non-zero status."
   exit 1
 fi
 
 # wait
+echo "Waiting for gitlab to finish starting pods.."
 kubectl wait --for=condition=Ready deployments --all --timeout=-1s -n gitlab
 
 # Please set your /etc/hosts
