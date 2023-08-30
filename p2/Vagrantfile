@@ -1,0 +1,20 @@
+Vagrant.configure(2) do |config|
+    # [...]
+    # config.vm.box = "debian/buster64"
+    config.vm.define "wilS" do |control|
+            # control.vm.hostname = "wilS"
+            # control.vm.network :private-network, ip: "192.168.56.110"
+            control.vm.network :private_network, type: "dhcp", control_network__internal: true
+            control.vm.network :private_network,
+                ip: "172.20.128.2", netmask: "16"
+            config.vm.provider "docker" do |docker|
+                docker.image = "debian:bookworm"
+                docker.name = "bshamsidS"
+                docker.has_ssh = true
+            end
+    end
+        # config.vm.provision :shell, :inline => SHELL
+        #     touch FILE_CREATED
+        # SHELL
+        # control.vm.provision "shell", path: "https://example.com/provisioner.sh"
+end
