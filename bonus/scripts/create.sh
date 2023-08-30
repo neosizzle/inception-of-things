@@ -28,7 +28,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# wait, but should be okay once webservice is up
+# wait, but should be okay once webservice deployment is up
 # gitlab runner will not launch because of host config which i dont seem needed to do
 echo "Waiting for gitlab to finish starting pods.."
 kubectl wait --for=condition=Ready deployments --all --timeout=-1s -n gitlab
@@ -65,7 +65,7 @@ echo "External IP assigned to 10.43.2.138, please enter the repository pod name.
 read repoPodName
 
 # get container ID
-containerId = $(kubectl get pod $repoPodName -o jsonpath="{.status.containerStatuses[].containerID}" | sed 's,.*//,,')
+containerId = $(kubectl get pod $repoPodName -o jsonpath="{.status.containerStatuses[].containerID} -n argocd" | sed 's,.*//,,')
 
 # change /etc/hosts in argocd repo container
 echo 'echo "10.43.2.138 gitlab.localhost" >> /etc/hosts' | (echo "runc --root /run/containerd/runc/k8s.io/ exec -t -u 0 $containerID sh" | (docker exec -it  k3d-mycluster-server-0 /bin/sh))
