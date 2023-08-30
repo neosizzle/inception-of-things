@@ -22,12 +22,14 @@ helm upgrade --install gitlab gitlab/gitlab \
   --set livenessProbe.initialDelaySeconds=1220 \
   --set readinessProbe.initialDelaySeconds=1220
 
+# will error if we didnt install gitlab runner
 if [ $? -ne 0 ]; then
   echo "helm upgrade command failed. Exiting with non-zero status."
   exit 1
 fi
 
-# wait
+# wait, but should be okay once webservice is up
+# gitlab runner will not launch because of host config which i dont seem needed to do
 echo "Waiting for gitlab to finish starting pods.."
 kubectl wait --for=condition=Ready deployments --all --timeout=-1s -n gitlab
 
