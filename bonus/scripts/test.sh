@@ -17,10 +17,20 @@ read repoPodName
 containerId=$(kubectl get pod $repoPodName -o jsonpath="{.status.containerStatuses[].containerID}" -n argocd | sed 's,.*//,,')
 
 # change /etc/hosts in argocd repo container
-echo 'echo "10.43.2.138 gitlab.localhost" >> /etc/hosts' | (echo "runc --root /run/containerd/runc/k8s.io/ exec -t -u 0 $containerID sh" | (docker exec -it  k3d-mycluster-server-0 /bin/sh))
+docker exec -it k3d-mycluster-server-0 "/bin/runc" --root /run/containerd/runc/k8s.io/ exec -t -u 0 $containerId "/bin/sh" -c 'echo "10.43.2.138 gitlab.localhost" >> /etc/hosts' 
 
-# add repo 
-argocd repo add https://gitlab.localhost/root/iot.git --insecure-skip-server-verification
+# auth argocd
+echo 'y' | argocd login localhost:8080 --username admin --password Passw0rd
+
+# auth gitlab
+gitlabPw=$(kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo)
+
+# create repo
+echo "Please create a public repo in gitlab.localhost and enter the repo URL (https://)"
+read repoURL
+
+# add repo
+argocd repo add $repoURL --insecure-skip-server-verification --username root --password $gitlabPw
 
 if [ $? -ne 0 ]; then
   echo "Command failed. Exiting with non-zero status."
