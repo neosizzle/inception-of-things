@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# https://docs.vagrantup.com.
+BOX_IMAGE = "generic/debian11"
+PATH_TO_PUBLIC_KEY="~/.ssh/id_rsa.pub"
+PATH_TO_SERVER_SCRIPT="./server_setup.sh"
+PATH_TO_AGENT_SCRIPT="./agent_setup.sh"
+
+require 'yaml'
+
+current_dir    = File.dirname(File.expand_path(__FILE__))
+configs        = YAML.load_file("#{current_dir}/config.yaml")
+vagrant_config = configs['configs'][configs['configs']['use']]
+
+Vagrant.configure("2") do |config|
+
+	#Server config
+  config.vm.define "Server" do |s|
+    s.vm.box = BOX_IMAGE
+    s.vm.network "private_network", ip: vagrant_config['server_ip']
+    s.vm.hostname = "nfernandS"
+		
+		# Provider settings
+    s.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+
+	#Copies the publickey in id_rsa.pub into machine
+	s.vm.provision "file", source: PATH_TO_PUBLIC_KEY , destination: "~/.ssh/me.pub"
+	
+	#Server start script
+	s.vm.provision "shell", path: PATH_TO_SERVER_SCRIPT,
+		env: {"SERVER_IP" => vagrant_config['server_ip'], "TOKEN" => vagrant_config['token']}, run: 'always'
+  end
+
+	#ServerWorker config
+  config.vm.define "ServerWorker" do |sw|
+    sw.vm.box = BOX_IMAGE
+    sw.vm.network "private_network", ip: "192.168.56.111"
+    sw.vm.hostname = "nfernandSW"
+			
+		# Provider settings
+    sw.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+
+	#Copies the publickey in id_rsa.pub into machine
+	sw.vm.provision "file", source: PATH_TO_PUBLIC_KEY , destination: "~/.ssh/me.pub"
+
+	#Agent start script
+	sw.vm.provision "shell", path: PATH_TO_AGENT_SCRIPT,
+		env: {"SERVER_IP" => vagrant_config['server_ip'], "TOKEN" => vagrant_config['token']}, run: 'always'
+	end
+end
