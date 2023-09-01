@@ -12,7 +12,6 @@ kubectl config set-context --current --namespace=gitlab
 
 # download and configure gitlab
 helm repo add gitlab https://charts.gitlab.io
-helm search repo -l gitlab/gitlab
 helm upgrade --install gitlab gitlab/gitlab \
   --timeout 600s \
   --set global.hosts.domain=localhost \
@@ -78,6 +77,7 @@ gitlabPw=$(kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.
 
 # create repo
 echo "Please create a public repo in gitlab.localhost and enter the repo URL (https://)"
+echo "Repo needs to have name "iot" and by the root user."
 read repoURL
 
 # add repo
