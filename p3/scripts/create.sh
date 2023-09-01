@@ -23,6 +23,7 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 echo "waiting for argocd pods to start.."
 kubectl wait --for=condition=Ready pods --all --timeout=69420s -n argocd
 kubectl port-forward svc/argocd-server -n argocd 8080:443 --address="0.0.0.0" 2>&1 > /var/log/argocd-log &
+sleep 5
 
 # get agrocd initial password
 init_pw=$(argocd admin initial-password -n argocd | head -n 1)
