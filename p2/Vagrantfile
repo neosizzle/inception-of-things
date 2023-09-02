@@ -26,9 +26,9 @@ Vagrant.configure("2") do |config|
     s.vm.provider "docker" do |d|
       d.build_dir = "."
       # d.build_args = "-p", "8080:22"
-      d.has_ssh = true
+      # d.has_ssh = true
       d.expose = ["22"]
-      # d.ports = ["8080:22"]
+      d.ports = ["2222:22"]
       d.name = "bunyodS"
     end
 
