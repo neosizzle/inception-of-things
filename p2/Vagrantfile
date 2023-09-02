@@ -1,20 +1,44 @@
-Vagrant.configure(2) do |config|
-    # [...]
-    # config.vm.box = "debian/buster64"
-    config.vm.define "wilS" do |control|
-            # control.vm.hostname = "wilS"
-            # control.vm.network :private-network, ip: "192.168.56.110"
-            control.vm.network :private_network, type: "dhcp", control_network__internal: true
-            control.vm.network :private_network,
-                ip: "172.20.128.2", netmask: "16"
-            config.vm.provider "docker" do |docker|
-                docker.image = "debian:bookworm"
-                docker.name = "bshamsidS"
-                docker.has_ssh = true
-            end
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# https://docs.vagrantup.com.
+BOX_IMAGE = "debian:buster"
+PATH_TO_PUBLIC_KEY="~/.ssh/id_rsa.pub"
+PATH_TO_SERVER_SCRIPT="./scripts/server_setup.sh"
+
+require 'yaml'
+
+current_dir    = File.dirname(File.expand_path(__FILE__))
+# why not put configs['configs']['default']
+configs        = YAML.load_file("#{current_dir}/confs/config.yaml")
+vagrant_config = configs['configs'][configs['configs']['use']]
+
+Vagrant.configure("2") do |config|
+
+	#Server config
+  config.ssh.forward_agent = true
+  config.vm.define "Server" do |s|
+    # s.vm.hostname = "bshamsidS"
+    
+    s.vm.network :private_network, type: "dhcp", control_network__internal: true
+    s.vm.network :private_network, ip: vagrant_config['server_ip']
+    # Provider settings
+    s.vm.provider "docker" do |d|
+      d.build_dir = "."
+      # d.build_args = "-p", "8080:22"
+      d.has_ssh = true
+      d.expose = ["22"]
+      # d.ports = ["8080:22"]
+      d.name = "bunyodS"
     end
-        # config.vm.provision :shell, :inline => SHELL
-        #     touch FILE_CREATED
-        # SHELL
-        # control.vm.provision "shell", path: "https://example.com/provisioner.sh"
+
+	#Copies the publickey in id_rsa.pub into machine
+	# s.vm.provision "file", source: PATH_TO_PUBLIC_KEY , destination: "/home/vagrant/.ssh/id_rsa2.pub"
+	
+	#Server start script
+  config.ssh.username = "vagrant"
+  config.ssh.private_key_path = "~/.ssh/id_rsa"
+	s.vm.provision :shell, path: PATH_TO_SERVER_SCRIPT,
+		env: {"SERVER_IP" => vagrant_config['server_ip'], "TOKEN" => vagrant_config['token']}, run: 'always'
+  end
 end
