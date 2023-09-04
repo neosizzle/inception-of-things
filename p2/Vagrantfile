@@ -35,5 +35,4 @@ Vagrant.configure("1") do |config|
 		env: {"SERVER_IP" => vagrant_config['server_ip'], "TOKEN" => vagrant_config['token']}, run: 'always'
   end
 
-	end
 end
