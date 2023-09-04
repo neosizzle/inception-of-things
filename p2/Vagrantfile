@@ -13,7 +13,7 @@ current_dir    = File.dirname(File.expand_path(__FILE__))
 configs        = YAML.load_file("#{current_dir}/config.yaml")
 vagrant_config = configs['configs'][configs['configs']['use']]
 
-Vagrant.configure("1") do |config|
+Vagrant.configure("2") do |config|
 
 	#Server config
   config.vm.define "Server" do |s|
