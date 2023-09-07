@@ -17,7 +17,7 @@ cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
 #	[--node-external-ip] = Sets up the server over local network
 # [--agent-token] = Custom token
 echo "Starting k3s server..."
-curl -sfL https://get.k3s.io | sh -s - --node-external-ip=$SERVER_IP --agent-token=$TOKEN
+#curl -sfL https://get.k3s.io | sh -s - --node-external-ip=$SERVER_IP --agent-token=$TOKEN
 
 #Without external_ip (advertise-address defaults to node-ip might be able to remove)
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --advertise-address=$SERVER_IP --node-ip=$SERVER_IP --agent-token=$TOKEN
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --node-ip=$SERVER_IP --agent-token=$TOKEN
