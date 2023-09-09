@@ -1,6 +1,0 @@
-configs:
-  use: 'default'
-  default:
-    server_ip: '192.168.56.110'
-    agent_start_ip: '192.168.56.110'
-    token: 'plswork'
