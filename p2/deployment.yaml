@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app-1
+  labels:
+    app: nginx-app-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-app-1
+  template:
+    metadata:
+      labels:
+        app: nginx-app-1
+    spec:
+      containers:
+        - name: container-app-1
+          image: bunyod16/iot-app-1:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-volume-1
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-volume-1
+          configMap:
+            name: config-app-1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app-2
+  labels:
+    app: nginx-app-2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-app-2
+  template:
+    metadata:
+      labels:
+        app: nginx-app-2
+    spec:
+      containers:
+        - name: container-app-2
+          image: bunyod16/iot-app-1:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-volume-2
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-volume-2
+          configMap:
+            name: config-app-2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app-3
+  labels:
+    app: nginx-app-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-app-3
+  template:
+    metadata:
+      labels:
+        app: nginx-app-3
+    spec:
+      containers:
+        - name: container-app-3
+          image: bunyod16/iot-app-1:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-volume-3
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-volume-3
+          configMap:
+            name: config-app-3
