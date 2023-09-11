@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: container-app-1
-          image: bunyod16/iot-app-1:latest
+          image: nginx:latest
           ports:
             - containerPort: 80
           volumeMounts:
@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: container-app-2
-          image: bunyod16/iot-app-1:latest
+          image: nginx:latest
           ports:
             - containerPort: 80
           volumeMounts:
@@ -74,7 +74,7 @@ spec:
     spec:
       containers:
         - name: container-app-3
-          image: bunyod16/iot-app-1:latest
+          image: nginx:latest
           ports:
             - containerPort: 80
           volumeMounts:
