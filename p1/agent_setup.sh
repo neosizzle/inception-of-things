@@ -20,7 +20,7 @@ cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
 
 #connect to server
 echo "Joining cluster as agent..."
-curl -sfL https://get.k3s.io | K3S_URL=https://$SERVER_IP:6443 K3S_TOKEN=$TOKEN sh -
+#curl -sfL https://get.k3s.io | K3S_URL=https://$SERVER_IP:6443 K3S_TOKEN=$TOKEN sh -
 
 #Without external_ip (can try to pass in node-ip dynamically with args in Vagrant file)
 curl -sfL https://get.k3s.io | sh -s - agent --server https://$SERVER_IP:6443 --token=$TOKEN --node-ip=192.168.56.111
